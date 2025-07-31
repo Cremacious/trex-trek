@@ -1,9 +1,10 @@
 const STRAVA_CLIENT_ID = process.env.CLIENT_ID!;
 const STRAVA_CLIENT_SECRET = process.env.CLIENT_SECRET!;
-const BASE_URL =
+const BASE_URL = (
   process.env.BETTER_AUTH_URL ||
   process.env.NEXTAUTH_URL ||
-  'http://localhost:3000';
+  'http://localhost:3000'
+).replace(/\/$/, ''); 
 const REDIRECT_URI = `${BASE_URL}/api/strava/callback`;
 
 export function getStravaAuthUrl() {
@@ -51,7 +52,6 @@ export async function getStravaActivities(accessToken: string) {
 
   const data = await res.json();
 
-  // Ensure we return an array
   if (!Array.isArray(data)) {
     console.error('Strava API returned non-array data:', data);
     throw new Error('Expected array of activities but got: ' + typeof data);
