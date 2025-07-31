@@ -12,7 +12,7 @@ export function getStravaAuthUrl() {
     response_type: 'code',
     redirect_uri: REDIRECT_URI,
     scope: 'read,activity:read_all',
-    approval_prompt: 'auto',
+    approval_prompt: 'force',
   });
   return `https://www.strava.com/oauth/authorize?${params.toString()}`;
 }
@@ -28,6 +28,13 @@ export async function exchangeCodeForToken(code: string) {
       grant_type: 'authorization_code',
     }),
   });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    console.error('Strava token exchange failed:', res.status, errorText);
+    throw new Error(`Token exchange failed: ${res.status} ${errorText}`);
+  }
+
   return res.json();
 }
 
@@ -35,5 +42,20 @@ export async function getStravaActivities(accessToken: string) {
   const res = await fetch('https://www.strava.com/api/v3/athlete/activities', {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
-  return res.json();
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    console.error('Strava activities fetch failed:', res.status, errorText);
+    throw new Error(`Activities fetch failed: ${res.status} ${errorText}`);
+  }
+
+  const data = await res.json();
+
+  // Ensure we return an array
+  if (!Array.isArray(data)) {
+    console.error('Strava API returned non-array data:', data);
+    throw new Error('Expected array of activities but got: ' + typeof data);
+  }
+
+  return data;
 }
