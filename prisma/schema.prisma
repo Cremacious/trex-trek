@@ -76,7 +76,7 @@ model Verification {
 
 
 model Activity {
-  id                  String   @id 
+  id                  String   
   userId              String
   user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   resourceState       Int
@@ -135,6 +135,6 @@ model Activity {
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
-  @@unique([id, userId])
+  @@id([id, userId])
   @@map("activity")
 }
