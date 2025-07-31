@@ -23,6 +23,7 @@ model User {
   updatedAt     DateTime
   sessions      Session[]
   accounts      Account[]
+  activities    Activity[]
 
   @@unique([email])
   @@map("user")
@@ -71,4 +72,69 @@ model Verification {
   updatedAt  DateTime?
 
   @@map("verification")
+}
+
+
+model Activity {
+  id                  String   @id 
+  userId              String
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resourceState       Int
+  athleteId           Int?
+  athleteResourceState Int?
+  name                String
+  distance            Float
+  movingTime          Int
+  elapsedTime         Int
+  totalElevationGain  Float
+  type                String
+  sportType           String
+  workoutType         Int?
+  startDate           DateTime
+  startDateLocal      DateTime
+  timezone            String?
+  utcOffset           Int?
+  locationCity        String?
+  locationState       String?
+  locationCountry     String?
+  achievementCount    Int
+  kudosCount          Int
+  commentCount        Int
+  athleteCount        Int
+  photoCount          Int
+  mapId               String?
+  summaryPolyline     String?
+  mapResourceState    Int?
+  trainer             Boolean
+  commute             Boolean
+  manual              Boolean
+  private             Boolean
+  visibility          String?
+  flagged             Boolean
+  gearId              String?
+  startLat            Float?
+  startLng            Float?
+  endLat              Float?
+  endLng              Float?
+  averageSpeed        Float?
+  maxSpeed            Float?
+  hasHeartrate        Boolean
+  averageHeartrate    Float?
+  maxHeartrate        Float?
+  heartrateOptOut     Boolean
+  displayHideHeartrateOption Boolean
+  elevHigh            Float?
+  elevLow             Float?
+  uploadId            BigInt?
+  uploadIdStr         String?
+  externalId          String?
+  fromAcceptedTag     Boolean
+  prCount             Int
+  totalPhotoCount     Int
+  hasKudoed           Boolean
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@unique([id, userId])
+  @@map("activity")
 }
